@@ -84,9 +84,11 @@ public class ShortestPathApp {
          These two panels are where the user can view and modify the graph networks
          */
         JButton addVertex = new JButton(" Add Vertex");
+        addVertex.setEnabled(false);
         JTextField addEdge = new JTextField("x1,x2,weight");
         addEdge.setPreferredSize(new Dimension(100, 30));
         JButton addAnEdge = new JButton("Add Edge:");
+        addAnEdge.setEnabled(false);
         JLabel shortestDist = new JLabel();
         JLabel shortestDistNodes = new JLabel();
         drawPanel.add(addVertex);
@@ -98,7 +100,8 @@ public class ShortestPathApp {
             public void actionPerformed(ActionEvent actionEvent) {
                 AbstractButton aButton = (AbstractButton) actionEvent.getSource();
                 String selectedRadioButton = aButton.getText();
-
+                addAnEdge.setEnabled(false);
+                addVertex.setEnabled(false);
                 if (selectedRadioButton.contains("4")) {
                     graphHandle = graphGenMod.buildGraph4v();
                     graph = graphGenMod.GenerateGraphAdapter(graphHandle);
@@ -119,8 +122,9 @@ public class ShortestPathApp {
                     graphHandle = graphGenMod.buildGraph9v();
                     graph = graphGenMod.GenerateGraphAdapter(graphHandle);
                     numberOfVertices = 9;
-
                 } else {
+                    addAnEdge.setEnabled(true);
+                    addVertex.setEnabled(true);
                     graphHandle = graphGenMod.buildEmptyGraph();
                     graph = graphGenMod.GenerateGraphAdapter(graphHandle);
                     numberOfVertices = 1;
@@ -152,7 +156,7 @@ public class ShortestPathApp {
                             return;
                         }
                         for (int i = 0; i < stringSplit.length - 1; i++) {
-                            if (isVertextNameValid(stringSplit[i])) {
+                            if (!isVertextNameValid(stringSplit[i])) {
                                 JOptionPane.showMessageDialog(null, "Vertex name is not in the right format. Ex: x1, x2");
                                 return;
                             }
@@ -179,6 +183,7 @@ public class ShortestPathApp {
                     }
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(null, e.getMessage());
+                    e.printStackTrace();
                 }
 
             }
@@ -237,8 +242,8 @@ public class ShortestPathApp {
                         shortestDistNodes.setText("");
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
                     JOptionPane.showMessageDialog(null, "Error");
+                    e.printStackTrace();
                 }
                 frame.getContentPane().revalidate();
             }
