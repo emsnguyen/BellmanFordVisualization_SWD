@@ -12,7 +12,6 @@ import javax.swing.border.*;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.List;
 import javax.swing.*;
 import org.jgrapht.ListenableGraph;
@@ -188,55 +187,55 @@ public class ShortestPathApp {
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
                     if (group.getSelection() == null) {
-                    JOptionPane.showMessageDialog(null, "You must specify a graph for running the algorithm");
-                    return;
-                }
+                        JOptionPane.showMessageDialog(null, "You must specify a graph for running the algorithm");
+                        return;
+                    }
 
-                if (!isVertextNameValid(source.getText())) {
-                    JOptionPane.showMessageDialog(null, "You must specify a valid source vertext from given graph");
-                    return;
-                }
-                if (!isVertextNameValid(destination.getText())) {
-                    JOptionPane.showMessageDialog(null, "You must specify a valid destination vertext from given graph");
-                    return;
-                }
-                String startPt = source.getText().trim();
-                int startInt = Integer.parseInt(startPt.substring(1));
-                String endPt = destination.getText().trim();
-                int endInt = Integer.parseInt(endPt.substring(1));
-                distances = new int[numberOfVertices + 1];
-                parents = new int[numberOfVertices + 1];
-                recalculateBF(startInt);
-                ArrayList journey = new ArrayList();
-                if (Bellman.isNegativeCycle) {
-                    shortestDistNodes.setText("");
-                    shortestDist.setText("Negative cycle detected. Path not available");
-                } else if (distances[endInt] != MAX_VALUE) {
-                    int v = endInt;
-                    List<Integer> nodes = new ArrayList<Integer>();
-                    nodes.add(v);
-                    while (parents[v] != MAX_VALUE) {
-                        journey.add(parents[v] + "," + v);
-                        v = parents[v];
+                    if (!isVertextNameValid(source.getText())) {
+                        JOptionPane.showMessageDialog(null, "You must specify a valid source vertext from given graph");
+                        return;
+                    }
+                    if (!isVertextNameValid(destination.getText())) {
+                        JOptionPane.showMessageDialog(null, "You must specify a valid destination vertext from given graph");
+                        return;
+                    }
+                    String startPt = source.getText().trim();
+                    int startInt = Integer.parseInt(startPt.substring(1));
+                    String endPt = destination.getText().trim();
+                    int endInt = Integer.parseInt(endPt.substring(1));
+                    distances = new int[numberOfVertices + 1];
+                    parents = new int[numberOfVertices + 1];
+                    recalculateBF(startInt);
+                    ArrayList journey = new ArrayList();
+                    if (Bellman.isNegativeCycle) {
+                        shortestDistNodes.setText("");
+                        shortestDist.setText("Negative cycle detected. Path not available");
+                    } else if (distances[endInt] != MAX_VALUE) {
+                        int v = endInt;
+                        List<Integer> nodes = new ArrayList<Integer>();
                         nodes.add(v);
-                    }
-                    graphGenMod.changeEdgeColor(journey, graph);
-                    String shortestDistText = "Shortest distance from " + startPt + " to " + endPt + " is " + distances[endInt] + "                   ";
-                    String shortestDistNodesTxt = "";
-                    for (int i = nodes.size(); i > 0; i--) {
-                        shortestDistNodesTxt += "x" + nodes.get(i - 1);
-                        if (i != 1) {
-                            shortestDistNodesTxt += " ==> ";
+                        while (parents[v] != MAX_VALUE) {
+                            journey.add(parents[v] + "," + v);
+                            v = parents[v];
+                            nodes.add(v);
                         }
-                    }
+                        graphGenMod.changeEdgeColor(journey, graph);
+                        String shortestDistText = "Shortest distance from " + startPt + " to " + endPt + " is " + distances[endInt] + "                   ";
+                        String shortestDistNodesTxt = "";
+                        for (int i = nodes.size(); i > 0; i--) {
+                            shortestDistNodesTxt += "x" + nodes.get(i - 1);
+                            if (i != 1) {
+                                shortestDistNodesTxt += " ==> ";
+                            }
+                        }
 
-                    shortestDist.setText(shortestDistText);
-                    shortestDistNodes.setText(shortestDistNodesTxt);
-                } else {
-                    graphGenMod.setDefaultColor(graph);
-                    shortestDist.setText("No path available         ");
-                    shortestDistNodes.setText("");
-                }
+                        shortestDist.setText(shortestDistText);
+                        shortestDistNodes.setText(shortestDistNodesTxt);
+                    } else {
+                        graphGenMod.setDefaultColor(graph);
+                        shortestDist.setText("No path available         ");
+                        shortestDistNodes.setText("");
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                     JOptionPane.showMessageDialog(null, "Error");

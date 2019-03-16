@@ -1,4 +1,5 @@
 package shortestpathapp;
+
 import org.jgrapht.ListenableGraph;
 import org.jgrapht.ext.JGraphXAdapter;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -10,8 +11,6 @@ import java.util.Map;
 import java.util.HashMap;
 
 public class GraphFactory {
-
-    // Global Variables
 
     public static int MAX_VALUE = 9999;
     public DefaultWeightedEdge[] EdgeList;
@@ -29,9 +28,10 @@ public class GraphFactory {
 
     // Extended edge class
     public static class MyEdge extends DefaultWeightedEdge {
+
         @Override
         public String toString() {
- 
+
             return String.valueOf(getWeight());
         }
     }
@@ -129,7 +129,7 @@ public class GraphFactory {
         return g;
     }
 
-      // Creates a default graph with five vertices
+    // Creates a default graph with five vertices
     public ListenableGraph<String, MyEdge> buildGraph5v() {
         ListenableDirectedWeightedGraph<String, MyEdge> g
                 = new ListenableDirectedWeightedGraph<>(MyEdge.class);
@@ -156,7 +156,7 @@ public class GraphFactory {
         return g;
     }
 
-      // Creates a default graph with nine vertices. This is taken from lecture directly
+    // Creates a default graph with nine vertices. This is taken from lecture directly
     public ListenableGraph<String, MyEdge> buildGraph9v() {
         int numberOfVertices = 9;
         x = new HashMap();
@@ -202,7 +202,7 @@ public class GraphFactory {
         return g;
     }
 
-     // Creates a default graph with nine vertices. This is taken from youtube
+    // Creates a default graph with nine vertices. This is taken from youtube
     public ListenableGraph<String, MyEdge> buildGraph9vAlternate() {
         int numberOfVertices = 9;
         x = new HashMap();
