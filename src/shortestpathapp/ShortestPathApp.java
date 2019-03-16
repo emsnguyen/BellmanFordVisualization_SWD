@@ -1,4 +1,5 @@
 package shortestpathapp;
+
 import com.mxgraph.swing.mxGraphComponent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,6 +12,7 @@ import javax.swing.border.*;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.List;
 import javax.swing.*;
 import org.jgrapht.ListenableGraph;
@@ -66,7 +68,7 @@ public class ShortestPathApp {
         /* Populate distance panel
          A panel allow selection of source node and run the bellman ford algorithm to obtain shortest path
          */
-        distancePanel.add(new JLabel("Source:"));
+        distancePanel.add(new JLabel("Source: (Ex: x1, x2,...)"));
         JButton runFullReport = new JButton("Run full report   ");
         JButton drawShortestPath = new JButton("Draw shortest distance");
         JTextField source = new JTextField();
@@ -75,7 +77,7 @@ public class ShortestPathApp {
         destination.setPreferredSize(new Dimension(20, 20));
         distancePanel.add(source);
         distancePanel.add(runFullReport);
-        distancePanel.add(new JLabel("Destination:"));
+        distancePanel.add(new JLabel("Destination: (Ex: x1, x2,...)"));
         distancePanel.add(destination);
         distancePanel.add(drawShortestPath);
 
@@ -93,12 +95,6 @@ public class ShortestPathApp {
         drawPanel.add(addEdge);
         graphPanel.add(shortestDist);
         graphPanel.add(shortestDistNodes);
-         /* Set up event handlers
-            drawGraph - draw initial graph from available samples ( 4 vertices, 5 vertices, 9 vertices x2, empty graph) 
-            customizingGraph - customizing a graph by adding new vertices and edges
-            calcDistance - Perform Bellman Ford to calculate and display shortest path in the graphPanel
-            runReport - Run Bellman Ford and display the full report (source to all vertices) to the user
-         */
         ActionListener drawGraph = new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 AbstractButton aButton = (AbstractButton) actionEvent.getSource();
@@ -142,38 +138,71 @@ public class ShortestPathApp {
             public void actionPerformed(ActionEvent actionEvent) {
                 AbstractButton aButton = (AbstractButton) actionEvent.getSource();
                 String selectedFeature = aButton.getText();
-                if (selectedFeature.contains("Add Vertex")) {
-                    numberOfVertices++;
-                    graphHandle.addVertex("x" + numberOfVertices);
-                    graph = graphGenMod.GenerateGraphAdapter(graphHandle);
-                    graphPanel.removeAll();
-                    graphPanel.add(new mxGraphComponent(graph));
-                    frame.getContentPane().revalidate();
-                } else if (selectedFeature.contains("Add Edge")) {
-                    String[] stringSplit = addEdge.getText().split(",");
-                    String src = stringSplit[0];
-                    String dest = stringSplit[1];
-                    String weight = stringSplit[2];
+                try {
+                    if (selectedFeature.contains("Add Vertex")) {
+                        numberOfVertices++;
+                        graphHandle.addVertex("x" + numberOfVertices);
+                        graph = graphGenMod.GenerateGraphAdapter(graphHandle);
+                        graphPanel.removeAll();
+                        graphPanel.add(new mxGraphComponent(graph));
+                        frame.getContentPane().revalidate();
+                    } else if (selectedFeature.contains("Add Edge")) {
+                        String[] stringSplit = addEdge.getText().split(",");
+                        if (stringSplit.length < 3) {
+                            JOptionPane.showMessageDialog(null, "You must enter an edge with format: x1,x2,weight");
+                            return;
+                        }
+                        for (int i = 0; i < stringSplit.length - 1; i++) {
+                            if (isVertextNameValid(stringSplit[i])) {
+                                JOptionPane.showMessageDialog(null, "Vertex name is not in the right format. Ex: x1, x2");
+                                return;
+                            }
+                        }
+                        if (!isInteger(stringSplit[2].trim())) {
+                            JOptionPane.showMessageDialog(null, "Weight must be a valid integer");
+                            return;
+                        }
+                        String src = stringSplit[0].trim();
+                        String dest = stringSplit[1].trim();
+                        String weight = stringSplit[2].trim();
 
-                    GraphFactory.MyEdge e = graphHandle.addEdge(src, dest);
-                    ListenableDirectedWeightedGraph<String, GraphFactory.MyEdge> g = (ListenableDirectedWeightedGraph<String, GraphFactory.MyEdge>) graphHandle;
-                    g.setEdgeWeight(e, Integer.parseInt(weight));
-                    graph = graphGenMod.GenerateGraphAdapter(graphHandle);
+                        GraphFactory.MyEdge e = graphHandle.addEdge(src, dest);
+                        ListenableDirectedWeightedGraph<String, GraphFactory.MyEdge> g = (ListenableDirectedWeightedGraph<String, GraphFactory.MyEdge>) graphHandle;
+                        g.setEdgeWeight(e, Integer.parseInt(weight));
+                        graph = graphGenMod.GenerateGraphAdapter(graphHandle);
 
-                    graphGenMod.updateHashMap(src.substring(1) + "," + dest.substring(1), e);
-                    graphPanel.removeAll();
-                    graphPanel.add(new mxGraphComponent(graph));
-                    frame.getContentPane().revalidate();
-                } else {
+                        graphGenMod.updateHashMap(src.substring(1) + "," + dest.substring(1), e);
+                        graphPanel.removeAll();
+                        graphPanel.add(new mxGraphComponent(graph));
+                        frame.getContentPane().revalidate();
+                    } else {
 
+                    }
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, e.getMessage());
                 }
+
             }
         };
         ActionListener calcDistance = new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                String startPt = source.getText();
+                try {
+                    if (group.getSelection() == null) {
+                    JOptionPane.showMessageDialog(null, "You must specify a graph for running the algorithm");
+                    return;
+                }
+
+                if (!isVertextNameValid(source.getText())) {
+                    JOptionPane.showMessageDialog(null, "You must specify a valid source vertext from given graph");
+                    return;
+                }
+                if (!isVertextNameValid(destination.getText())) {
+                    JOptionPane.showMessageDialog(null, "You must specify a valid destination vertext from given graph");
+                    return;
+                }
+                String startPt = source.getText().trim();
                 int startInt = Integer.parseInt(startPt.substring(1));
-                String endPt = destination.getText();
+                String endPt = destination.getText().trim();
                 int endInt = Integer.parseInt(endPt.substring(1));
                 distances = new int[numberOfVertices + 1];
                 parents = new int[numberOfVertices + 1];
@@ -184,7 +213,7 @@ public class ShortestPathApp {
                     shortestDist.setText("Negative cycle detected. Path not available");
                 } else if (distances[endInt] != MAX_VALUE) {
                     int v = endInt;
-                    List<Integer> nodes= new ArrayList<Integer>();
+                    List<Integer> nodes = new ArrayList<Integer>();
                     nodes.add(v);
                     while (parents[v] != MAX_VALUE) {
                         journey.add(parents[v] + "," + v);
@@ -192,15 +221,15 @@ public class ShortestPathApp {
                         nodes.add(v);
                     }
                     graphGenMod.changeEdgeColor(journey, graph);
-                    String shortestDistText = "Shortest distance from " + startPt + " to " + endPt + " is " + distances[endInt]+"                   ";
+                    String shortestDistText = "Shortest distance from " + startPt + " to " + endPt + " is " + distances[endInt] + "                   ";
                     String shortestDistNodesTxt = "";
-                    for (int i=nodes.size();i>0;i--)
-                    {
-                       shortestDistNodesTxt += "x" + nodes.get(i-1);
-                       if (i!=1)
-                           shortestDistNodesTxt += " ==> ";
+                    for (int i = nodes.size(); i > 0; i--) {
+                        shortestDistNodesTxt += "x" + nodes.get(i - 1);
+                        if (i != 1) {
+                            shortestDistNodesTxt += " ==> ";
+                        }
                     }
-                    
+
                     shortestDist.setText(shortestDistText);
                     shortestDistNodes.setText(shortestDistNodesTxt);
                 } else {
@@ -208,13 +237,29 @@ public class ShortestPathApp {
                     shortestDist.setText("No path available         ");
                     shortestDistNodes.setText("");
                 }
-
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Error");
+                }
                 frame.getContentPane().revalidate();
             }
         };
         ActionListener runReport = new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                String startPt = source.getText();
+                if (group.getSelection() == null) {
+                    JOptionPane.showMessageDialog(null, "You must specify a graph for running the algorithm");
+                    return;
+                }
+
+                if (!isVertextNameValid(source.getText())) {
+                    JOptionPane.showMessageDialog(null, "You must specify a valid source vertext from given graph");
+                    return;
+                }
+                if (!isVertextNameValid(destination.getText())) {
+                    JOptionPane.showMessageDialog(null, "You must specify a valid destination vertext from given graph");
+                    return;
+                }
+                String startPt = source.getText().trim();
                 int startInt = Integer.parseInt(startPt.substring(1));
                 distances = new int[numberOfVertices + 1];
                 parents = new int[numberOfVertices + 1];
@@ -270,6 +315,42 @@ public class ShortestPathApp {
         Arrays.fill(parents, MAX_VALUE);
         Bellman = new BellmanMethod(numberOfVertices, distances, parents);
         Bellman.BellmanFordLoop(startInt, adjacencyMatrix);
+    }
+
+    public static boolean isVertextNameValid(String label) {
+        if (label == null || label.trim().length() <= 1 || !label.trim().startsWith("x")) {
+            return false;
+        }
+        char[] toCharArray = label.trim().toCharArray();
+        for (int i = 1; i < toCharArray.length; i++) {
+            if (!Character.isDigit(toCharArray[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean isInteger(String s) {
+        return isInteger(s, 10);
+    }
+
+    public static boolean isInteger(String s, int radix) {
+        if (s.isEmpty()) {
+            return false;
+        }
+        for (int i = 0; i < s.length(); i++) {
+            if (i == 0 && s.charAt(i) == '-') {
+                if (s.length() == 1) {
+                    return false;
+                } else {
+                    continue;
+                }
+            }
+            if (Character.digit(s.charAt(i), radix) < 0) {
+                return false;
+            }
+        }
+        return true;
     }
 
     // Create default GUI. Lenghty but important for user experience

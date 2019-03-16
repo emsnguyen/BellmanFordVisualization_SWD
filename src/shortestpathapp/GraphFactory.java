@@ -1,19 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package shortestpathapp;
-
-/**
- *
- * @author cheeyauk Graph Factory is a module to draw directed graphs coded
- * using the jgraph library. Most functions are catered for this application and
- * provide useful information for solving the Bellman Ford problem (adjacency
- * matrix). This is based on Factory design pattern where most customized
- * features are stored and changed in this factory isolated from the main
- * environment.
- */
 import org.jgrapht.ListenableGraph;
 import org.jgrapht.ext.JGraphXAdapter;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -35,7 +20,7 @@ public class GraphFactory {
     // Transform graph into a type can be plotted irectly into swing UI
     public JGraphXAdapter<String, MyEdge> GenerateGraphAdapter(ListenableGraph<String, MyEdge> g) {
         JGraphXAdapter<String, MyEdge> graphAdapter
-                = new JGraphXAdapter<String, MyEdge>(g);
+                = new JGraphXAdapter<>(g);
         graphAdapter.setCellStyle("strokeColor=#000000", graphAdapter.getEdgeToCellMap().values().toArray());
         mxIGraphLayout layout = new mxCircleLayout(graphAdapter);
         layout.execute(graphAdapter.getDefaultParent());
@@ -67,9 +52,6 @@ public class GraphFactory {
         }
         graphAdapter.setCellStyle("strokeColor=#000000", edgeToCellMap.values().toArray());
         graphAdapter.setCellStyle("strokeColor=#00FF00", edgeCellArray);
-        //  mxIGraphLayout layout = new mxCircleLayout(graphAdapter);
-        // layout.execute(graphAdapter.getDefaultParent());
-
     }
 
     // Default color for graph edges is black
@@ -115,7 +97,7 @@ public class GraphFactory {
     public ListenableGraph<String, MyEdge> buildEmptyGraph() {
         x = new HashMap();
         ListenableDirectedWeightedGraph<String, MyEdge> g
-                = new ListenableDirectedWeightedGraph<String, MyEdge>(MyEdge.class);
+                = new ListenableDirectedWeightedGraph<>(MyEdge.class);
 
         String x1 = "x1";
 
@@ -128,7 +110,7 @@ public class GraphFactory {
     public ListenableGraph<String, MyEdge> buildGraph4v() {
         x = new HashMap();
         ListenableDirectedWeightedGraph<String, MyEdge> g
-                = new ListenableDirectedWeightedGraph<String, MyEdge>(MyEdge.class);
+                = new ListenableDirectedWeightedGraph<>(MyEdge.class);
 
         String x1 = "x1";
         String x2 = "x2";
@@ -150,7 +132,7 @@ public class GraphFactory {
       // Creates a default graph with five vertices
     public ListenableGraph<String, MyEdge> buildGraph5v() {
         ListenableDirectedWeightedGraph<String, MyEdge> g
-                = new ListenableDirectedWeightedGraph<String, MyEdge>(MyEdge.class);
+                = new ListenableDirectedWeightedGraph<>(MyEdge.class);
         x = new HashMap();
         String x1 = "x1";
         String x2 = "x2";

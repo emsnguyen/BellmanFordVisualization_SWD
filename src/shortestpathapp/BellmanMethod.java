@@ -1,4 +1,7 @@
 package shortestpathapp;
+
+import javax.swing.JOptionPane;
+
 public class BellmanMethod {
 
     // Singleton variables used by current and parent class
@@ -15,13 +18,16 @@ public class BellmanMethod {
         distances = distancesIn;
         parents = parentsIn;
     }
-    
+
     // The main Bellman Loop. Calculation will perform BellmanCalculateDistance followed by BellmanCheckNegativeCycle 
     public void BellmanFordLoop(int source, int adjacencyMatrix[][]) {
-
-        distances[source] = 0;
-        BellmanCalculateDistance(adjacencyMatrix);
-        BellmanCheckNegativeCycle(adjacencyMatrix);
+        try {
+            distances[source] = 0;
+            BellmanCalculateDistance(adjacencyMatrix);
+            BellmanCheckNegativeCycle(adjacencyMatrix);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
 
     }
 
