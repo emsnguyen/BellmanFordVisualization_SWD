@@ -129,9 +129,11 @@ public class ShortestPathApp {
                     graph = graphGenMod.GenerateGraphAdapter(graphHandle);
                     numberOfVertices = 1;
                 }
+                
                 graphPanel.removeAll();
+                
                 graphPanel.add(new mxGraphComponent(graph));
-                graphPanel.setPreferredSize(new Dimension(350, 300));
+                graphPanel.setPreferredSize(new Dimension(700, 500));
                 graphPanel.add(shortestDist);
                 graphPanel.add(shortestDistNodes);
                 frame.getContentPane().revalidate();
@@ -217,7 +219,7 @@ public class ShortestPathApp {
                         shortestDist.setText("Negative cycle detected. Path not available");
                     } else if (distances[endInt] != MAX_VALUE) {
                         int v = endInt;
-                        List<Integer> nodes = new ArrayList<Integer>();
+                        List<Integer> nodes = new ArrayList<>();
                         nodes.add(v);
                         while (parents[v] != MAX_VALUE) {
                             journey.add(parents[v] + "," + v);
@@ -376,9 +378,9 @@ public class ShortestPathApp {
         drawPanel.setLayout(new FlowLayout());
         buttonPanel.setLayout(new GridLayout(0, 1));
 
-        buttonPanel.setPreferredSize(new Dimension(200, 230));
-        distancePanel.setPreferredSize(new Dimension(150, 50));
-        graphPanel.setPreferredSize(new Dimension(350, 320));
+        buttonPanel.setPreferredSize(new Dimension(300, 300));
+        distancePanel.setPreferredSize(new Dimension(100, 50));
+        graphPanel.setPreferredSize(new Dimension(800, 600));
         drawPanel.setPreferredSize(new Dimension(100, 100));
 
         Border lowerEtched = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
