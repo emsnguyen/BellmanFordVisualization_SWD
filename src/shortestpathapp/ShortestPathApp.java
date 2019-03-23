@@ -1,6 +1,7 @@
 package shortestpathapp;
 
 import com.mxgraph.swing.mxGraphComponent;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Dimension;
@@ -102,6 +103,8 @@ public class ShortestPathApp {
                 String selectedRadioButton = aButton.getText();
                 addAnEdge.setEnabled(false);
                 addVertex.setEnabled(false);
+                shortestDist.setText("");
+                shortestDistNodes.setText("");
                 if (selectedRadioButton.contains("4")) {
                     graphHandle = graphGenMod.buildGraph4v();
                     graph = graphGenMod.GenerateGraphAdapter(graphHandle);
@@ -127,13 +130,13 @@ public class ShortestPathApp {
                     addVertex.setEnabled(true);
                     graphHandle = graphGenMod.buildEmptyGraph();
                     graph = graphGenMod.GenerateGraphAdapter(graphHandle);
+                    graph.setConnectableEdges(false);
                     numberOfVertices = 1;
                 }
                 
                 graphPanel.removeAll();
-                
                 graphPanel.add(new mxGraphComponent(graph));
-                graphPanel.setPreferredSize(new Dimension(700, 500));
+                graphPanel.setPreferredSize(new Dimension(800, 500));
                 graphPanel.add(shortestDist);
                 graphPanel.add(shortestDistNodes);
                 frame.getContentPane().revalidate();
@@ -302,6 +305,7 @@ public class ShortestPathApp {
         displayPanel.add(drawPanel);
         mainPanel.add(userControlPanel);
         mainPanel.add(displayPanel);
+        displayPanel.setBackground(Color.red);
 
         // Display
         frame.add(mainPanel);
